@@ -108,10 +108,12 @@ namespace IncludeToolbox
             var cl = cfg?.Rules;
             if (cl == null) { VS.MessageBox.ShowErrorAsync("IWYU Error:", "Failed to gather Compiler info.").FireAndForget(); return null; }
 
+            VCDebugSettings debug = (VCDebugSettings)cfg.DebugSettings;
+            string projectDir = debug.WorkingDirectory.Replace('\\', '/');
+
             var com = (IVCRulePropertyStorage2)cl.Item("CL");
             var xstandard = com.GetEvaluatedPropertyValue("LanguageStandard");
 
-            var projectDir = com.GetEvaluatedPropertyValue("DefiningProjectDirectory").Replace('\\', '/');
             var includes = com.GetEvaluatedPropertyValue("AdditionalIncludeDirectories").Replace('\\', '/')
                 .Split(';').Where(s => !string.IsNullOrWhiteSpace(s))
                 .Select(x => "-I\"" + Path.Combine(projectDir, x) + '\"');
