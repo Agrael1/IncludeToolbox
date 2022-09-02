@@ -111,7 +111,7 @@ namespace IncludeToolbox
             var com = (IVCRulePropertyStorage2)cl.Item("CL");
             var xstandard = com.GetEvaluatedPropertyValue("LanguageStandard");
 
-            var projectDir = com.GetEvaluatedPropertyValue("ProjectDir").Replace('\\', '/');
+            var projectDir = com.GetEvaluatedPropertyValue("DefiningProjectDirectory").Replace('\\', '/');
             var includes = com.GetEvaluatedPropertyValue("AdditionalIncludeDirectories").Replace('\\', '/')
                 .Split(';').Where(s => !string.IsNullOrWhiteSpace(s))
                 .Select(x => "-I\"" + Path.Combine(projectDir, x) + '\"');
