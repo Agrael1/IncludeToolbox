@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Microsoft.VisualStudio.VSConstants;
@@ -109,9 +110,11 @@ namespace IncludeToolbox
 
             var com = (IVCRulePropertyStorage2)cl.Item("CL");
             var xstandard = com.GetEvaluatedPropertyValue("LanguageStandard");
+
+            var projectDir = com.GetEvaluatedPropertyValue("ProjectDir").Replace('\\', '/');
             var includes = com.GetEvaluatedPropertyValue("AdditionalIncludeDirectories").Replace('\\', '/')
                 .Split(';').Where(s => !string.IsNullOrWhiteSpace(s))
-                .Select(x => "-I\"" + x + '\"');
+                .Select(x => "-I\"" + Path.Combine(projectDir, x) + '\"');
             var defs = com.GetEvaluatedPropertyValue("PreprocessorDefinitions")
                 .Split(';').Where(s => !string.IsNullOrWhiteSpace(s))
                 .Select(x => "-D" + x);
